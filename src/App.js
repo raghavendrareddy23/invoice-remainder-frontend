@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./components/Login";
+import Home from "./components/Home";
+import Navbar from "./components/Header";
+import InvoiceDashboard from "./pages/InvoiceDashboard";
+import CreateInvoice from "./components/InvoiceForm";
 
-function App() {
+const App = () => {
+  const isLoggedIn = sessionStorage.getItem('UserId');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/login" exact element={<Login />} />
+        {/* Protect routes based on authentication status */}
+        {isLoggedIn ? (
+          <>
+            <Route path="/" element={<Home />} />
+            <Route path="/invoice-dashboard" element={<InvoiceDashboard />} />
+            <Route path="/create-invoice" element={<CreateInvoice />} />
+          </>
+        ) : (
+          <Route path="*" element={<Navigate to="/login" />} />
+        )}
+      </Routes>
+    </Router>
   );
 }
 
